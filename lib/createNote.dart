@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:midterm_project/services/database.dart';
 
 class CreateNoteScreen extends StatefulWidget {
   @override
@@ -6,6 +7,12 @@ class CreateNoteScreen extends StatefulWidget {
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
+  final _formKey = GlobalKey<FormState>();
+  bool loading = false;
+  //textfield state
+  String question = '', answer = '', error = '';
+  int timestamp;
+
   @override
   Widget build(BuildContext context){
     return SafeArea(
@@ -58,16 +65,26 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     return Column(
       children: [
         title(" Create New Note"),
-        note("Question","Answer"),
-        whiteDivider(),
-        message("Are you sure you wish to create this note?"),
-        whiteDivider(),
-        Column(
-          children: [
-            confirmButton('Confirm'),
-            cancelButton('Cancel'),
-          ],
-        ),
+        Form(
+            key: _formKey,
+            child: Column(children: [
+              note(question,answer),
+              whiteDivider(),
+              message("Are you sure you wish to create this note?"),
+              whiteDivider(),
+              Column(
+                children: [
+                  confirmButton('Confirm'),
+                  cancelButton('Cancel'),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: 14.0),
+                  )
+                ],),
+        ],))
       ],
     );
   }
@@ -140,8 +157,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             child: Column(
               children: [
               noteTitle(),
-              noteQuestion(question),
-              noteAnswer(answer),
+              noteQuestion(),
+              noteAnswer(),
             ],)
           ),
         ],)
@@ -169,13 +186,17 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     );
   }
 
-  Container noteQuestion(var question){
+  Container noteQuestion(){
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(20,6,20,0),
       width: 270,
       height: 100,
       child: TextFormField(
+        validator: (val) => val.isEmpty ? 'Write a Question' : null,
+        onChanged: (val) {
+          setState(() => question = val);
+        },
         keyboardType: TextInputType.multiline,
         maxLines: 3,
         initialValue: question,
@@ -194,13 +215,17 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     );
   }
 
-  Container noteAnswer(var answer){
+  Container noteAnswer(){
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 5),
       width: 200,
       height: 30,
       child: TextFormField(
+        validator: (val) => val.isEmpty ? "Write the Answer" : null,
+        onChanged: (val) {
+          setState(() => answer = val);
+        },
         keyboardType: TextInputType.text,
         initialValue: answer,
         style: TextStyle(fontSize: 15),
@@ -238,9 +263,17 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.amber[600])
         ),
-        onPressed:() {
-          Navigator.pop(createScreenContext);
-        }
+        onPressed: () async {
+           if (_formKey.currentState.validate()) {
+              setState(() => timestamp = DateTime.now().millisecondsSinceEpoch);
+
+              _handleCreateSubmission(
+                question, 
+                answer,
+                timestamp
+              );
+              Navigator.pop(createScreenContext);
+          }}
       ))
     );
   }
@@ -265,5 +298,14 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
         }
       ))
     );
+  }
+
+  void _handleCreateSubmission(String question, String answer, var timestamp){
+    var note = <String, dynamic>{
+      'question': question,
+      'answer' : answer,
+      'timestamp' : timestamp,
+    };
+    DatabaseService.addNote(note);
   }
 }

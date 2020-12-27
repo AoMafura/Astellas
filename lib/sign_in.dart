@@ -188,9 +188,10 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (loginScreenContext) => ElevatedButton(
                 child: Text('Login',
                     style: TextStyle(color: Colors.black, fontSize: 18)),
-                style: ButtonStyle(
-                    backgroundColor:
+                    style: ButtonStyle(
+                      backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.amber[600])),
+                        
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     setState(() => loading = true);

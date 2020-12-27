@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:midterm_project/services/database.dart';
+
+typedef UpdateCallback = Function(String question, String answer, int timestamp, String id);
+typedef DeleteCallback = Function(String id);
 
 class EditNoteScreen extends StatefulWidget {
   @override
@@ -6,6 +10,25 @@ class EditNoteScreen extends StatefulWidget {
 }
 
 class _EditNoteScreenState extends State<EditNoteScreen> {
+  _EditNoteScreenState({
+      @required this.id,
+      @required this.question,
+      @required this.answer,
+      @required this.timestamp,
+      @required this.update,
+      @required this.delete});
+  
+  final UpdateCallback update;
+  final DeleteCallback delete;
+
+  TextEditingController updateText = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+  bool loading = false;
+  //textfield state
+  String id = '', question = '', answer = '', error = '';
+  int timestamp;
+
   @override
   Widget build(BuildContext context){
     return SafeArea(
@@ -58,16 +81,21 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     return Column(
       children: [
         title(" Edit Note"),
-        note("Temp Question","Answer"),
-        whiteDivider(),
-        message("Confirm your changes to this note."),
-        whiteDivider(),
-        Column(
-          children: [
-            confirmButton('Confirm'),
-            cancelButton('Cancel'),
-          ],
-        ),
+        Form(
+            key: _formKey,
+            child: Column(children: [
+              note(question,answer),
+              whiteDivider(),
+              message("Confirm your changes to this note."),
+              whiteDivider(),
+              Column(
+                children: [
+                  confirmButton('Confirm'),
+                  cancelButton('Cancel'),
+                ],
+              ),
+            ],)
+        )
       ],
     );
   }
@@ -169,16 +197,20 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     );
   }
 
-  Container noteQuestion(var question){
+  Container noteQuestion(var oldQuestion){
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(20,6,20,0),
       width: 270,
       height: 100,
       child: TextFormField(
+        validator: (val) => val.isEmpty ? "Write a Question" : null,
+        onChanged: (val) {
+          setState(() => question = val);
+        },
         keyboardType: TextInputType.multiline,
         maxLines: 3,
-        initialValue: question,
+        initialValue: oldQuestion,
         decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never,
             focusedBorder: OutlineInputBorder(
@@ -194,15 +226,19 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     );
   }
 
-  Container noteAnswer(var answer){
+  Container noteAnswer(var oldAnswer){
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 5),
       width: 200,
       height: 30,
       child: TextFormField(
+        validator: (val) => val.isEmpty ? "Write the Answer" : null,
+        onChanged: (val) {
+          setState(() => answer = val);
+        },
         keyboardType: TextInputType.text,
-        initialValue: answer,
+        initialValue: oldAnswer,
         style: TextStyle(fontSize: 15),
         decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -260,8 +296,14 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.blue[200])
         ),
-        onPressed:() {
-          Navigator.pop(editScreenContext);
+
+  // static Future<void> updateNote(String id, Map<String, dynamic> note)
+
+        onPressed: () async {
+           if (_formKey.currentState.validate()) {
+              setState(() => timestamp = DateTime.now().millisecondsSinceEpoch);
+              Navigator.pop(editScreenContext);
+           }
         }
       ))
     );

@@ -131,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.red[900])
         ),
         onPressed:() {
-          Navigator.pushNamed(context, menuRoute);
+          // Navigator.pushNamed(context, menuRoute);
         }
       ))
     );

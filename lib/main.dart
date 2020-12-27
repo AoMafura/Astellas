@@ -1,4 +1,4 @@
-git//Code By: Barriga, Hosea M.
+//Code By: Barriga, Hosea M.
 //Midterm Project
 
 import 'package:flutter/material.dart';
