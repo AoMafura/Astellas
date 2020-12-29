@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:midterm_project/models/note.dart';
 
-class NoteTile extends StatelessWidget {
-  final Note note;
+class NoteTileA extends StatelessWidget {
+  final String id, question, answer;
 
-  NoteTile({this.note});
+  NoteTileA({this.id, this.question, this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class NoteTile extends StatelessWidget {
   Column dashboardScreenBody() {
     return Column(
       children: [
-        noteCard(note.question,note.answer),
+        noteCard(this.question,this.answer),
       ],
     );
   }

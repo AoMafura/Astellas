@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:midterm_project/models/note.dart';
 import 'services/database.dart';
 import 'package:provider/provider.dart';
-import 'package:midterm_project/notes_list.dart';
+import 'package:midterm_project/notes_listA.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -12,16 +12,14 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<Note>>.value(
-      value: DatabaseService().notes,
-      child: WillPopScope(
+    return WillPopScope(
           onWillPop: () async => false,
           child: SafeArea(
             child: Scaffold(
               appBar: yellowBar(),
-              body: NotesList(),
+              body: NotesListA(),
               backgroundColor: Colors.indigo[700],
-          ))),
+          ))
     );
   }
 

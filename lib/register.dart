@@ -3,9 +3,10 @@ import 'package:midterm_project/services/auth.dart';
 import 'package:midterm_project/shared/loading.dart';
 
 class RegisterScreen extends StatefulWidget {
+  // RegisterScreen({
+  //   final Function toggleView,
+  // });
   @override
-  final Function toggleView;
-  RegisterScreen({this.toggleView});
   _RegisterScreenState createState() => _RegisterScreenState();
 }
 
@@ -45,25 +46,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
           color: Colors.black,
         ),
         backgroundColor: Colors.amber[600],
-        actions: <Widget>[
-          FlatButton.icon(
-              onPressed: () {
-                widget.toggleView();
-              },
-              icon: Icon(Icons.person),
-              label: Text('Log In'))
-        ],
         title: const Text(
           'Register',
           style: TextStyle(color: Colors.black),
-        ));
+        ),
+        // actions: <Widget> [
+        //   loginButton()
+        // ]
+      );
   }
+  
+  // Builder loginButton(){
+  //   return Builder(builder: (loginScreenContext) => IconButton(
+  //     icon: const Icon(Icons.login),
+  //     iconSize: 34,
+  //     tooltip: 'Login',
+  //     onPressed: () {
+  //       Navigator.pushReplacementNamed(loginScreenContext, '/login');
+  //     },
+  //   ));
+  // }
+
+  //------------Body-----
 
   Column registerScreenBody() {
     return Column(
       children: [
         avatar(),
-        astellas(),
+        astellas('Astellas'),
         whiteDivider(),
         Form(
             key: _formKey,
@@ -85,10 +95,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Container astellas() {
+  Container astellas(String title) {
     return Container(
       margin: EdgeInsets.fromLTRB(0.0, 20, 0.0, 5),
-      child: Text('Astellas',
+      child: Text(title,
           style: TextStyle(
               color: Colors.white,
               fontSize: 32,
@@ -232,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         height: 50.0,
         width: 500.0,
         child: Builder(
-            builder: (context) => ElevatedButton(
+            builder: (registerScreenContext) => ElevatedButton(
                 child: Text('Register',
                     style: TextStyle(color: Colors.black, fontSize: 18)),
                 style: ButtonStyle(
@@ -240,16 +250,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         MaterialStateProperty.all<Color>(Colors.amber[600])),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
-                    setState(() => loading = true);
-                    dynamic userID = await _auth.registerWithEmailAndPassword(
+                    // setState(() => loading = true);
+                    dynamic result = await _auth.registerWithEmailAndPassword(
                         email, password);
-                    if (userID == null) {
+                    if (result == null) {
                       setState(() {
                         error = 'Please supply valid email and password.';
-                        loading = false;
+                        // setState(() => loading = false);
                       });
-                    } else {
-                      
+                    }else{
+                      Navigator.pop(registerScreenContext);     
                     }
                   }
                 })));

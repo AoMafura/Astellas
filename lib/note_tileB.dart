@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:midterm_project/models/note.dart';
+import 'package:midterm_project/editNote.dart';
+import 'package:midterm_project/deleteNote.dart';
+import 'package:midterm_project/services/database.dart';
 
-class NoteTile2 extends StatelessWidget {
-  final Note note;
+class NoteTileB extends StatelessWidget {
+  final String id, question, answer;
 
-  NoteTile2({this.note});
+  NoteTileB({this.id, this.question, this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +23,12 @@ class NoteTile2 extends StatelessWidget {
   Column studyNotesScreenBody() {
     return Column(
       children: [
-        noteCard(note.question,note.answer),
+        noteCard(this.id, this.question, this.answer),
       ],
     );
   }
 
-  Card noteCard(var question, var answer) {
+  Card noteCard(String id, String question, String answer) {
     return Card(
       margin: EdgeInsets.fromLTRB(0, 20, 0, 25),
       elevation: 12,
@@ -54,7 +57,7 @@ class NoteTile2 extends StatelessWidget {
               noteAnswer(answer),
             ],)
           ),
-          noteMenu()
+          noteMenu(id, question, answer)
         ],)
       )
     );
@@ -71,32 +74,7 @@ class NoteTile2 extends StatelessWidget {
         height: 30,
       ),
     );
-  }
-
-  Align noteMenu(){
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        margin: EdgeInsets.fromLTRB(15, 0, 20, 0),
-        width: 80,
-        height: 50,
-          child: Row(children: [
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              width: 30,
-              height: 30,
-              child: editButton()
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              width: 30,
-              height: 30,
-              child: deleteButton()
-            ),
-          ],),
-      )
-    );
-  }
+  } 
 
   Container noteQuestion(var question){
     return Container(
@@ -130,28 +108,68 @@ class NoteTile2 extends StatelessWidget {
     );
   }
 
-//-----------------Note Buttons (Edit, Delete)----------------
-
-  Builder editButton(){
-    return Builder(builder: (editScreenContext) => IconButton(
-      icon: const Icon(Icons.edit),
-      iconSize: 25,
-      tooltip: 'Edit Note',
-      color: Colors.black,
-      onPressed: () {
-        Navigator.pushNamed(editScreenContext, '/editNote');
-      },
-    ));
+  Align noteMenu(String id, String question, String answer){
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(15, 0, 20, 0),
+        width: 80,
+        height: 50,
+          child: Row(children: [
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              width: 30,
+              height: 30,
+              child: editButton(id, question, answer)
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              width: 30,
+              height: 30,
+              child: deleteButton(id, question, answer)
+            ),
+          ],),
+      )
+    );
   }
 
-  Builder deleteButton(){
+//-----------------Note Buttons (Edit, Delete)----------------
+
+  Builder editButton(String id, String question, String answer){
+    return Builder(
+      builder: (editScreenContext) => IconButton(
+        icon: const Icon(Icons.edit),
+        iconSize: 25,
+        tooltip: 'Edit Note',
+        color: Colors.black,
+
+        onPressed: () {
+          Navigator.push(
+            editScreenContext, 
+            MaterialPageRoute(
+              builder: (editScreenContext) => EditNoteScreen(
+                note: Note(id: id, question: question, answer: answer),
+                update: _updateNote,          
+        )));
+        },
+      )
+    );
+  }
+
+  Builder deleteButton(String id, String question, String answer){
     return Builder(builder: (deleteScreenContext) => IconButton(
       icon: const Icon(Icons.delete),
       iconSize: 25,
       tooltip: 'Delete Note',
       color: Colors.black,
       onPressed: () {
-       Navigator.pushNamed(deleteScreenContext, '/deleteNote');
+       Navigator.push(
+            deleteScreenContext, 
+            MaterialPageRoute(
+              builder: (deleteScreenContext) => DeleteNoteScreen(
+                note: Note(id: id, question: question, answer: answer),
+                delete: _deleteNote,          
+        )));
       },
     ));
   }
@@ -176,5 +194,19 @@ class NoteTile2 extends StatelessWidget {
       },
 
     );
+  }
+
+  
+  void _updateNote(String updatedQuestion, String updatedAnswer, String id) {
+    var note = <String, dynamic>{
+      'question' : updatedQuestion,
+      'answer' : updatedAnswer,
+      'timestamp': DateTime.now().millisecondsSinceEpoch
+    };
+    DatabaseService.updateNote(id, note);
+  }
+
+  void _deleteNote(String id) {
+    DatabaseService.deleteNote(id);
   }
 }

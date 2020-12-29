@@ -46,7 +46,7 @@ class _EmailScreenState extends State<EmailScreen> {
     return Column(
       children: [
         title(" Change Email"),
-        note("TempEmail@email.com"),
+        note("temp.email@email.com"),
         whiteDivider(),
         message("Confirm your changes to your email address."),
         whiteDivider(),

@@ -3,8 +3,10 @@ import 'package:midterm_project/services/auth.dart';
 import 'package:midterm_project/shared/loading.dart';
 
 class LoginScreen extends StatefulWidget {
-  final Function toggleView;
-  LoginScreen({this.toggleView});
+  // LoginScreen({
+  //   this.toggleView,
+  // });
+  // final Function toggleview;
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -39,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(
       children: [
         avatar(),
-        title('Study Notes'),
+        title('Astellas'),
         subTitle('Log in'),
         whiteDivider(),
         Form(
@@ -169,11 +171,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Builder registerButton() {
     return Builder(
-      builder: (context) => TextButton(
+      builder: (registerScreenContext) => TextButton(
         child: Text(' Register.', style: TextStyle(color: Colors.amber[600])),
         onPressed: () {
-          widget.toggleView();
-          Navigator.pushNamed(context, '/register');
+          // Widget.toggleView();
+          Navigator.pushNamed(registerScreenContext, '/register');
         },
       ),
     );
@@ -196,16 +198,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_formKey.currentState.validate()) {
                     setState(() => loading = true);
                     dynamic result =
-                        await _auth.logInWithEmailAndPassword(email, password);
+                        await _auth.logInWithEmailAndPassword(
+                          email, password);
                     if (result == null) {
                       setState(() {
                         error = 'Could not sign with those credentials.';
-                        loading = false;
+                        setState(() => loading = false);
                       });
+                    }else{
+                      Navigator.pushReplacementNamed(loginScreenContext, '/dashboard');
                     }
                   }
-                  Navigator.pushReplacementNamed(
-                      loginScreenContext, '/dashboard');
                 })));
   }
 }

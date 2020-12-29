@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:midterm_project/models/note.dart';
+
+typedef DeleteCallback = Function(String id);
 
 class DeleteNoteScreen extends StatefulWidget {
+  DeleteNoteScreen({
+    Key key, 
+    @required this.note,
+    @required this.delete,
+    });
+  final Note note;
+  final DeleteCallback delete;
   @override
   _DeleteNoteScreenState createState() => _DeleteNoteScreenState();
 }
 
 class _DeleteNoteScreenState extends State<DeleteNoteScreen> {
+  String error = '';
+  bool loading = false;
+
   @override
   Widget build(BuildContext context){
     return SafeArea(
@@ -58,7 +71,9 @@ class _DeleteNoteScreenState extends State<DeleteNoteScreen> {
     return Column(
       children: [
         title(" Delete Note"),
-        note("Question","Answer"),
+        note(
+          widget.note.question,
+          widget.note.answer),
         whiteDivider(),
         message("Are you sure you wish to delete this Note?"),
         whiteDivider(),
@@ -211,6 +226,7 @@ class _DeleteNoteScreenState extends State<DeleteNoteScreen> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.amber[600])
         ),
         onPressed:() {
+          widget.delete(widget.note.id);
           Navigator.pop(deleteScreenContext);
         }
       ))

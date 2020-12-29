@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:midterm_project/models/note.dart';
 import 'services/database.dart';
 import 'package:provider/provider.dart';
-import 'package:midterm_project/notes_list2.dart';
+import 'package:midterm_project/notes_listB.dart';
 
 class StudyNotesScreen extends StatefulWidget {
   @override
@@ -12,16 +12,14 @@ class StudyNotesScreen extends StatefulWidget {
 class _StudyNotesScreenState extends State<StudyNotesScreen> {
   @override
   Widget build(BuildContext context){
-    return StreamProvider<List<Note>>.value(
-      value: DatabaseService().notes,
-          child: SafeArea(
+    return SafeArea(
             child: Scaffold(
               appBar: yellowBar(),
-              body: NotesList2(),
+              body: NotesListB(),
               backgroundColor: Colors.indigo[700],
               floatingActionButton: createNewButton(),
             )
-    ));
+    );
   }
 
   

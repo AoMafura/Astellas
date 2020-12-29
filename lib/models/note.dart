@@ -1,7 +1,7 @@
 class Note {
-  final String username;
+  final String id;
   final String question;
   final String answer;
 
-  Note({this.answer, this.question, this.username});
+  Note({this.id, this.question, this.answer});
 }

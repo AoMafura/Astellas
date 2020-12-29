@@ -8,6 +8,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final AuthService _auth = AuthService();
+  String email, password;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -79,8 +80,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
         child: Column(children: [
-          usernameField('Temp Username aaaa a a a'),
-          emailField('Temp Email@.email.com'),
+          usernameField('Temp Username'),
+          emailField('temp.email@.email.com'),
           passwordField('Temp Password'),
         ],)
       )
@@ -131,7 +132,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           backgroundColor: MaterialStateProperty.all<Color>(Colors.red[900])
         ),
         onPressed:() {
-          // Navigator.pushNamed(context, menuRoute);
+           Navigator.pushNamed(context, menuRoute);
         }
       ))
     );
@@ -204,6 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
   
   Container passwordField(var password){
+    password = password.replaceAll(RegExp(r"."), "*");
     return Container(
       child: Column(children: [
         titleField("Password"),

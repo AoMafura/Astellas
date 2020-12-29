@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DeactivateScreen extends StatefulWidget {
   @override
@@ -6,8 +7,12 @@ class DeactivateScreen extends StatefulWidget {
 }
 
 class _DeactivateScreenState extends State<DeactivateScreen> {
+  
+  DateTime now = DateTime.now();
+  String formattedDate = '';
   @override
   Widget build(BuildContext context){
+    formattedDate = DateFormat('EEE yyyy-MM-dd kk:mm').format(now);
     return SafeArea(
       child: Scaffold(
         appBar: yellowBar(),
@@ -44,13 +49,13 @@ class _DeactivateScreenState extends State<DeactivateScreen> {
     return Column(
       children: [
         title(" Deactivate Account"),
-        note("Deactivating your account mean you lose all your notes.","Good Bye!"),
+        note("Congratulations on your Graduation!", formattedDate),
         whiteDivider(),
-        message("Are you sure you wish to deactivate your account?"),
+        message("May we meet again~"),
         whiteDivider(),
         Column(
           children: [
-            confirmButton('Confirm'),
+            confirmButton('Deactivate Account',null),
             cancelButton('Cancel'),
           ],
         ),
@@ -174,14 +179,14 @@ class _DeactivateScreenState extends State<DeactivateScreen> {
       child: Text(answer,
           style: TextStyle(
               color: Colors.brown[900],
-              fontSize: 18,
+              fontSize: 15,
               height: 1,
               fontStyle: FontStyle.italic)),
     );
   }
 
 
-  Container confirmButton(var menuName){
+  Container confirmButton(var menuName, var menuRoute){
   return Container(
       margin: EdgeInsets.fromLTRB(25, 0, 25, 20),
       height: 50.0,
@@ -198,7 +203,7 @@ class _DeactivateScreenState extends State<DeactivateScreen> {
         ),
         onPressed:() {
           Navigator.of(context).pushNamedAndRemoveUntil(
-            '/', 
+            menuRoute, 
             (Route<dynamic> route) => false
           );
         }
