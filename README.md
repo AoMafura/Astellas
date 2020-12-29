@@ -1,4 +1,4 @@
-# midterm_project
+# final_project
 
 In fulfillment of the requirements of Mobile Development Final Project.
 
